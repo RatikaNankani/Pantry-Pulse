@@ -1,115 +1,137 @@
+
 # PantryPulse
+### Know where hunger is heading before the line forms.
 
-**Know where hunger is heading before the line forms.**
+**AI-Powered Food Bank Demand Forecasting & Resource Planning**
 
-PantryPulse is an early warning and planning tool for food banks. It forecasts how many households each county will serve every week for the next 8 weeks, compares that forecast to the food bank's volunteers and food on hand, and turns any gap into a concrete, approvable action plan: volunteer shifts, pounds of food, meals, dollars, and where to send them.
+Developed by **Team Impact Trio | Impact Hackathon 2026**
 
-Built for **ImpactHacks 2026** in response to the question: *How can AI, technology, and innovation help the not-for-profit sector reach deeper into the communities it serves?*
+## Overview
 
----
+Food banks often rely on historical visits and manual estimates to plan volunteer shifts, food inventory, and community outreach. When demand unexpectedly increases, resources may already be stretched.
 
-## Why it exists
+**PantryPulse** is an AI-powered decision-support application designed to help food banks anticipate demand and plan resources proactively.
 
-Food banks usually plan from last week's numbers and discover they are overwhelmed only when the line is already out the door. But demand follows patterns that can be seen in advance: local need, seasons and holidays, school breaks, the end of the month when SNAP benefits run out, SNAP enrollment changes, unemployment, and grocery prices. PantryPulse turns those signals into a forecast and a plan.
+It combines machine learning forecasting, economic indicators, capacity analysis, and AI-generated recommendations to help food banks prepare for the next **8 weeks**.
 
-## What it does
+## Key Features
 
-| Capability | Description |
+### 1. Eight-Week Demand Forecasting
+- Uses Meta's Prophet forecasting model.
+- Predicts weekly household visits with uncertainty intervals.
+- Incorporates seasonality, school breaks, SNAP trends, and economic indicators.
+- Provides county-level forecasts for 13 North Texas Food Bank counties.
+
+### 2. Resource Capacity Planning
+- Compares forecast demand against available volunteer shifts and food inventory.
+- Identifies whether volunteers or food are the limiting resource.
+- Estimates additional shifts, pounds of food, meals, and funding requirements.
+- Supports interactive capacity adjustments.
+
+### 3. AI-Powered Action Planning
+- Integrates Anthropic Claude for operational recommendations.
+- Prioritizes resource gaps and suggests actions.
+- Generates draft volunteer and donor outreach messages.
+- Keeps humans responsible for approving recommendations.
+
+### 4. Economic Intelligence
+- Integrates economic indicators through the FRED API.
+- Uses unemployment and grocery price trends to inform demand forecasting.
+- Supports broader economic context for planning.
+
+### 5. Community Reach Analysis
+- Compares food insecurity estimates with simulated pantry visits.
+- Highlights counties where community need may exceed current service reach.
+- Supports targeted outreach and mobile pantry planning.
+
+## How PantryPulse Works
+
+1. **Data Collection:** Combine county food insecurity estimates, USDA SNAP data, and economic indicators.
+2. **Demand Forecasting:** Use Prophet to estimate household visits over the next eight weeks.
+3. **Capacity Assessment:** Compare expected demand with volunteer and food capacity.
+4. **Resource Gap Analysis:** Calculate additional shifts, food, meals, and estimated funding needs.
+5. **AI Recommendations:** Generate prioritized operational actions using Claude.
+6. **Human Approval:** Review and approve proposed actions before implementation.
+
+## Technology Stack
+
+| Component | Technology |
 |---|---|
-| **8-week demand forecast** | Households served per week for every US county (3,142), with an uncertainty range |
-| **Capacity check** | Volunteers and food checked separately; the tool names the real bottleneck |
-| **Gap to action** | Converts gaps into volunteer shifts, pounds (or kg) of food, meals, and dollars at local meal cost |
-| **Transfers first** | Finds spare capacity in other counties of the same state before asking for new resources |
-| **Who are we missing?** | Flags counties where need is high but visits are low |
-| **Economy view** | Live FRED data: state unemployment, grocery prices, GDP, CPI, inflation, consumer spending |
-| **AI action plan** | Claude turns the numbers into ranked priorities with owners, deadlines, and drafted outreach |
-| **Ask the strategist** | Plain-English questions answered from the model's numbers |
-| **Human approval + PDF** | People approve every action; the plan exports as a PDF |
+| Programming | Python |
+| Application Interface | Streamlit |
+| Forecasting | Prophet |
+| AI Strategist | Anthropic Claude API |
+| Economic Data | FRED API |
+| Data Processing | Pandas, NumPy |
+| Visualization | Plotly |
 
-**Design rule:** *Python does the math. Claude does the strategy. People make the decisions.*
+## Data Sources
 
----
+PantryPulse combines public datasets with simulated operational data.
 
-## Quick start
+**Public Data**
+- Feeding America — Map the Meal Gap, county-level food insecurity estimates.
+- USDA Food and Nutrition Service — SNAP participation trends.
+- Federal Reserve Economic Data (FRED) — unemployment and economic indicators.
+
+**Simulated Data**
+- Weekly food pantry visits.
+- Available volunteer shifts.
+- Food inventory and operational capacity.
+
+**Important:** The current prototype uses simulated pantry visit histories and capacity assumptions. Forecast accuracy measured on simulated visits should not be interpreted as validated performance on real food bank operations.
+
+## Getting Started
+
+### 1. Clone the Repository
 
 ```bash
-# 1. Create and activate a virtual environment (Windows PowerShell shown)
-python -m venv .venv
-.venv\Scripts\Activate.ps1          # macOS/Linux: source .venv/bin/activate
+git clone https://github.com/RatikaNankani/Pantry-Pulse.git
+cd Pantry-Pulse
+```
 
-# 2. Install dependencies
+### 2. Install Dependencies
+
+```bash
 pip install -r requirements.txt
+```
 
-# 3. Add your API keys (see docs/SETUP_AND_TROUBLESHOOTING.md)
-#    copy .streamlit/secrets.toml.example to .streamlit/secrets.toml and fill it in
+### 3. Configure API Keys
 
-# 4. Build the forecast (1-3 minutes)
-python demand_forecast_us.py
+The application may require credentials for Anthropic Claude and FRED integrations.
 
-# 5. Launch the dashboard
+Keep API credentials in local environment variables or Streamlit secrets. Never commit private API keys to GitHub.
+
+### 4. Launch the Application
+
+```bash
 streamlit run app.py
 ```
 
-Both API keys are optional. Without them, the app still runs: plans and answers come from built-in rules, and economic factors are turned off.
+The application should open in your browser.
 
-### Required input files (same folder as the scripts)
+Some features may require API credentials, additional source datasets, or an internet connection.
 
-| File | Source |
-|---|---|
-| `MMG2025_2019-2023_Data_To_Share_v2.xlsx` | Feeding America, Map the Meal Gap 2025 (2019-2023 data) |
-| `MMG2026_2024_Data_To_Share.xlsx` | Feeding America, Map the Meal Gap 2026 (2024 data) |
-| `snap-households-9.xlsx` | USDA FNS, SNAP households by state (June 2025 vs June 2026) |
+## Project Documentation
 
-The script finds these by name prefix (`MMG2025*`, `MMG2026*`, `snap-households*`), so download suffixes like ` (1)` are fine.
+Detailed technical documentation is available in the [`docs/`](docs/) folder.
 
----
+- [System Architecture](docs/ARCHITECTURE.md)
+- [Data Sources](docs/DATA.md)
+- [Forecasting Model](docs/FORECAST_MODEL.md)
+- [Capacity and Alerts](docs/CAPACITY_AND_ALERTS.md)
+- [Dashboard](docs/DASHBOARD.md)
+- [AI Strategist](docs/AI_STRATEGIST.md)
+- [FRED Economic Data](docs/FRED_ECONOMIC_DATA.md)
+- [Setup and Troubleshooting](docs/SETUP_AND_TROUBLESHOOTING.md)
+- [Limitations and Roadmap](docs/LIMITATIONS_AND_ROADMAP.md)
 
-## Project structure
+## Limitations and Future Improvements
 
-```
-final/
-├── demand_forecast_us.py      # Backend 1: data prep, simulation, Prophet forecasts, alerts
-├── strategist.py              # Backend 2: capacity logic, transfers, Claude API, fallbacks, PDF
-├── fred_data.py               # Backend 3: FRED API connector with offline cache
-├── app.py                     # Streamlit dashboard (3 views)
-├── requirements.txt
-├── .gitignore
-├── .streamlit/
-│   ├── secrets.toml.example   # template (safe to share)
-│   └── secrets.toml           # your real keys (never share or commit)
-├── outputs/                   # everything the forecast script writes
-│   └── fred_cache/            # downloaded FRED series, for offline use
-├── docs/                      # detailed documentation (below)
-└── MMG*.xlsx, snap-households*.xlsx   # input data
-```
+- Replace simulated visit data with actual food bank operational records.
+- Validate forecasting performance using real-world historical demand.
+- Integrate food donation forecasting.
+- Pilot the system with a North Texas food bank.
+- Expand operational planning capabilities.
 
-## Documentation
 
-| Document | What it covers |
-|---|---|
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | How the pieces fit together, data flow, design principles |
-| [docs/DATA.md](docs/DATA.md) | Every input and output file, every column, and whether it is real, derived, or simulated |
-| [docs/FORECAST_MODEL.md](docs/FORECAST_MODEL.md) | The forecasting pipeline step by step, with the reasoning behind each step |
-| [docs/CAPACITY_AND_ALERTS.md](docs/CAPACITY_AND_ALERTS.md) | Capacity formulas, bottlenecks, alerts, transfers, units (lbs/kg), worked examples |
-| [docs/AI_STRATEGIST.md](docs/AI_STRATEGIST.md) | How Claude is connected, what it sees, prompts, fallbacks, Q&A, PDF export |
-| [docs/FRED_ECONOMIC_DATA.md](docs/FRED_ECONOMIC_DATA.md) | FRED series used, how they enter the forecast vs the AI context, caching |
-| [docs/DASHBOARD.md](docs/DASHBOARD.md) | A tour of every view, control, and number in the app |
-| [docs/SETUP_AND_TROUBLESHOOTING.md](docs/SETUP_AND_TROUBLESHOOTING.md) | Installation, API keys, and fixes for every issue we hit |
-| [docs/LIMITATIONS_AND_ROADMAP.md](docs/LIMITATIONS_AND_ROADMAP.md) | What is real vs simulated, known limitations, next steps |
-
----
-
-## Honesty note
-
-All **need data is real** (Feeding America Map the Meal Gap for every US county, 2019-2024; USDA SNAP by state; FRED economic data; local cost per meal). **Weekly visit history and current capacity are simulated**, because food bank visit records are private. Accuracy results therefore show that the method works, not yet real-world accuracy. Food banks already export visit data from intake systems such as Link2Feed and Feeding America's Service Insights; plugging that in replaces the simulated history without other changes.
-
-## Data sources and credits
-
-- Feeding America, *Map the Meal Gap* (Ribar et al., 2025 and 2026 releases)
-- USDA Food and Nutrition Service, SNAP data tables
-- Federal Reserve Bank of St. Louis, FRED
-- Forecasting: [Prophet](https://facebook.github.io/prophet/); AI: Claude via the Anthropic API; dashboard: Streamlit
-
-## Team
-
-[Team name] | [Names] | ImpactHacks 2026
